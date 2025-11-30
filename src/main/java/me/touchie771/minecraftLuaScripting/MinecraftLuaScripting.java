@@ -6,8 +6,8 @@ public final class MinecraftLuaScripting extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
-
+        ScriptExecutor.setup(this);
+        ScriptExecutor.executeScripts();
     }
 
     @Override
