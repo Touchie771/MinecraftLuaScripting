@@ -2,6 +2,7 @@ package me.touchie771.minecraftLuaScripting;
 
 import me.touchie771.minecraftLuaScripting.api.LoggerApi;
 import me.touchie771.minecraftLuaScripting.api.PlayerApi;
+import me.touchie771.minecraftLuaScripting.api.ServerApi;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
@@ -65,9 +66,17 @@ public class ScriptExecutor {
         globals.set("setHealth", new PlayerApi.SetHealth());
         globals.set("getLocation", new PlayerApi.GetLocation());
         globals.set("kick", new PlayerApi.Kick());
+
         // Logger API
         globals.set("info", new LoggerApi.Info(plugin.getLogger()));
         globals.set("warning", new LoggerApi.Warning(plugin.getLogger()));
         globals.set("error", new LoggerApi.Error(plugin.getLogger()));
+
+        // Server API
+        globals.set("broadcast", new ServerApi.Broadcast());
+        globals.set("executeCommand", new ServerApi.ExecuteConsoleCommand());
+        globals.set("getOnlinePlayers", new ServerApi.GetOnlinePlayers());
+        globals.set("setWhitelist", new ServerApi.SetWhitelist());
+        globals.set("getMaxPlayers", new ServerApi.GetMaxPlayers());
     }
 }
