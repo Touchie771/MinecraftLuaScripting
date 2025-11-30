@@ -2,10 +2,12 @@ package me.touchie771.minecraftLuaScripting.api;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;
+import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.ZeroArgFunction;
 
 public class ServerApi {
@@ -22,6 +24,16 @@ public class ServerApi {
         @Override
         public LuaValue call(LuaValue command) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.checkjstring());
+            return LuaValue.NONE;
+        }
+    }
+
+    public static class ExecuteAs extends TwoArgFunction {
+        @Override
+        public LuaValue call(LuaValue senderVal, LuaValue commandVal) {
+            CommandSender sender = (CommandSender) senderVal.checkuserdata(CommandSender.class);
+            String command = commandVal.checkjstring();
+            Bukkit.dispatchCommand(sender, command);
             return LuaValue.NONE;
         }
     }

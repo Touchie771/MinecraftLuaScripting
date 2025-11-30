@@ -75,6 +75,7 @@ public class ScriptExecutor {
         // Server API
         globals.set("broadcast", new ServerApi.Broadcast());
         globals.set("executeCommand", new ServerApi.ExecuteConsoleCommand());
+        globals.set("executeAs", new ServerApi.ExecuteAs());
         globals.set("getOnlinePlayers", new ServerApi.GetOnlinePlayers());
         globals.set("setWhitelist", new ServerApi.SetWhitelist());
         globals.set("getMaxPlayers", new ServerApi.GetMaxPlayers());
