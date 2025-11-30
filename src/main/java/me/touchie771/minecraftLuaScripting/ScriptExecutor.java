@@ -1,5 +1,6 @@
 package me.touchie771.minecraftLuaScripting;
 
+import me.touchie771.minecraftLuaScripting.api.LoggerApi;
 import me.touchie771.minecraftLuaScripting.api.PlayerApi;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.lib.jse.JsePlatform;
@@ -16,7 +17,7 @@ public class ScriptExecutor {
     private static final Globals globals = JsePlatform.standardGlobals();
 
     public static void setup(MinecraftLuaScripting plugin) {
-        loadApi();
+        loadApi(plugin);
 
         if (!scriptsFolder.exists()) {
             if (scriptsFolder.mkdirs()) {
@@ -55,7 +56,8 @@ public class ScriptExecutor {
         }
     }
 
-    private static void loadApi() {
+    private static void loadApi(MinecraftLuaScripting plugin) {
+        // Player API
         globals.set("getPlayer", new PlayerApi.GetPlayer());
         globals.set("sendMessage", new PlayerApi.SendMessage());
         globals.set("teleport", new PlayerApi.Teleport());
@@ -63,5 +65,9 @@ public class ScriptExecutor {
         globals.set("setHealth", new PlayerApi.SetHealth());
         globals.set("getLocation", new PlayerApi.GetLocation());
         globals.set("kick", new PlayerApi.Kick());
+        // Logger API
+        globals.set("info", new LoggerApi.Info(plugin.getLogger()));
+        globals.set("warning", new LoggerApi.Warning(plugin.getLogger()));
+        globals.set("error", new LoggerApi.Error(plugin.getLogger()));
     }
 }
