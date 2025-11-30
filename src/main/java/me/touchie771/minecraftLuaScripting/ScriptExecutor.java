@@ -1,5 +1,6 @@
 package me.touchie771.minecraftLuaScripting;
 
+import me.touchie771.minecraftLuaScripting.api.PlayerApi;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
@@ -15,6 +16,8 @@ public class ScriptExecutor {
     private static final Globals globals = JsePlatform.standardGlobals();
 
     public static void setup(MinecraftLuaScripting plugin) {
+        loadApi();
+
         if (!scriptsFolder.exists()) {
             if (scriptsFolder.mkdirs()) {
                 plugin.getLogger().info("Created scripts folder");
@@ -50,5 +53,15 @@ public class ScriptExecutor {
         } catch (IOException e) {
             plugin.getLogger().severe("Failed to save example script: " + e.getMessage());
         }
+    }
+
+    private static void loadApi() {
+        globals.set("getPlayer", new PlayerApi.GetPlayer());
+        globals.set("sendMessage", new PlayerApi.SendMessage());
+        globals.set("teleport", new PlayerApi.Teleport());
+        globals.set("getHealth", new PlayerApi.GetHealth());
+        globals.set("setHealth", new PlayerApi.SetHealth());
+        globals.set("getLocation", new PlayerApi.GetLocation());
+        globals.set("kick", new PlayerApi.Kick());
     }
 }
