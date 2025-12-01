@@ -6,6 +6,7 @@ import me.touchie771.minecraftLuaScripting.api.LoggerApi;
 import me.touchie771.minecraftLuaScripting.api.PlayerApi;
 import me.touchie771.minecraftLuaScripting.api.ServerApi;
 import me.touchie771.minecraftLuaScripting.api.WorldApi;
+import me.touchie771.minecraftLuaScripting.commandHandlers.CommandRegister;
 import me.touchie771.minecraftLuaScripting.eventHandlers.EventListener;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
@@ -96,5 +97,8 @@ public class ScriptExecutor {
 
         // Event API
         globals.set("on", new EventListener(plugin).new On());
+
+        // Command API
+        globals.set("registerCommand", new CommandRegister(plugin).new Register());
     }
 }
