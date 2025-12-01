@@ -39,13 +39,4 @@ public class InventoryApi {
             }
         }
     }
-
-    public static class ClearInventory extends OneArgFunction {
-        @Override
-        public LuaValue call(LuaValue inventoryVal) {
-            Inventory inventory = (Inventory) inventoryVal.checkuserdata(Inventory.class);
-            inventory.clear();
-            return LuaValue.NONE;
-        }
-    }
 }

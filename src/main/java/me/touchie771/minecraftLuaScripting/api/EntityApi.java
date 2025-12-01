@@ -6,7 +6,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
-import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
@@ -28,23 +27,6 @@ public class EntityApi {
             } catch (IllegalArgumentException e) {
                 return LuaValue.error("Invalid entity type: " + typeName);
             }
-        }
-    }
-
-    public static class RemoveEntity extends OneArgFunction {
-        @Override
-        public LuaValue call(LuaValue entityVal) {
-            Entity entity = (Entity) entityVal.checkuserdata(Entity.class);
-            entity.remove();
-            return LuaValue.NONE;
-        }
-    }
-
-    public static class GetEntityId extends OneArgFunction {
-        @Override
-        public LuaValue call(LuaValue entityVal) {
-            Entity entity = (Entity) entityVal.checkuserdata(Entity.class);
-            return LuaValue.valueOf(entity.getEntityId());
         }
     }
 }
