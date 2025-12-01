@@ -1,8 +1,11 @@
 package me.touchie771.minecraftLuaScripting;
 
+import me.touchie771.minecraftLuaScripting.api.EntityApi;
+import me.touchie771.minecraftLuaScripting.api.InventoryApi;
 import me.touchie771.minecraftLuaScripting.api.LoggerApi;
 import me.touchie771.minecraftLuaScripting.api.PlayerApi;
 import me.touchie771.minecraftLuaScripting.api.ServerApi;
+import me.touchie771.minecraftLuaScripting.api.WorldApi;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
@@ -79,5 +82,22 @@ public class ScriptExecutor {
         globals.set("getOnlinePlayers", new ServerApi.GetOnlinePlayers());
         globals.set("setWhitelist", new ServerApi.SetWhitelist());
         globals.set("getMaxPlayers", new ServerApi.GetMaxPlayers());
+
+        // World API
+        globals.set("getWorld", new WorldApi.GetWorld());
+        globals.set("setTime", new WorldApi.SetTime());
+        globals.set("getTime", new WorldApi.GetTime());
+        globals.set("createExplosion", new WorldApi.CreateExplosion());
+        globals.set("setStorm", new WorldApi.SetStorm());
+
+        // Entity API
+        globals.set("spawnEntity", new EntityApi.SpawnEntity());
+        globals.set("removeEntity", new EntityApi.RemoveEntity());
+        globals.set("getEntityId", new EntityApi.GetEntityId());
+
+        // Inventory API
+        globals.set("getInventory", new InventoryApi.GetInventory());
+        globals.set("addItem", new InventoryApi.AddItem());
+        globals.set("clearInventory", new InventoryApi.ClearInventory());
     }
 }
