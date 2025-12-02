@@ -21,7 +21,18 @@ import java.util.Objects;
 public class ScriptExecutor {
 
     private static final File scriptsFolder = new File("LuaScripts");
-    private static final Globals globals = JsePlatform.standardGlobals();
+    private static Globals globals = JsePlatform.standardGlobals();
+    private static EventListener eventListener;
+
+    public static void reloadAll(MinecraftLuaScripting plugin) {
+        if (eventListener != null) {
+            org.bukkit.event.HandlerList.unregisterAll(eventListener);
+        }
+        
+        globals = JsePlatform.standardGlobals();
+        setup(plugin);
+        executeScripts();
+    }
 
     public static void setup(MinecraftLuaScripting plugin) {
         loadApi(plugin);
@@ -96,9 +107,14 @@ public class ScriptExecutor {
         globals.set("error", new LoggerApi.Error(plugin.getLogger()));
 
         // Event API
-        globals.set("on", new EventListener(plugin).new On());
+        eventListener = new EventListener(plugin);
+        globals.set("on", eventListener.new On());
 
         // Command API
         globals.set("registerCommand", new CommandRegister(plugin).new Register());
+    }
+
+    public static File getScriptsFolder() {
+        return scriptsFolder;
     }
 }

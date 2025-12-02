@@ -5,15 +5,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.SimpleCommandMap;
 import org.jetbrains.annotations.NotNull;
 import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.TwoArgFunction;
+import org.luaj.vm2.lib.ThreeArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
 
 public class CommandRegister {
 
@@ -35,10 +32,16 @@ public class CommandRegister {
         }
     }
 
-    public class Register extends TwoArgFunction {
+    public class Register extends ThreeArgFunction {
         @Override
-        public LuaValue call(LuaValue nameVal, LuaValue callbackVal) {
+        public LuaValue call(LuaValue nameVal, LuaValue permissionVal, LuaValue callbackVal) {
             String commandName = nameVal.checkjstring();
+            
+            String permission = null;
+            if (!permissionVal.isnil()) {
+                permission = permissionVal.checkjstring();
+            }
+            
             if (!callbackVal.isfunction()) {
                 return LuaValue.error("Callback must be a function");
             }
@@ -47,9 +50,9 @@ public class CommandRegister {
                 return LuaValue.error("CommandMap not initialized");
             }
 
-            LuaCommand command = new LuaCommand(commandName, callbackVal);
+            LuaCommand command = new LuaCommand(commandName, permission, callbackVal);
             commandMap.register(plugin.getName(), command);
-            plugin.getLogger().info("Registered command: " + commandName);
+            plugin.getLogger().info("Registered command: " + commandName + " with permission: " + permission);
             
             return LuaValue.TRUE;
         }
@@ -58,9 +61,38 @@ public class CommandRegister {
     private class LuaCommand extends Command {
         private final LuaValue callback;
 
-        protected LuaCommand(String name, LuaValue callback) {
+        protected LuaCommand(String name, String permission, LuaValue callback) {
             super(name);
             this.callback = callback;
+            if (permission != null && !permission.isEmpty()) {
+                setPermission(permission);
+            }
+        }
+
+        @Override
+        public @NotNull String getDescription() {
+            return "Lua command";
+        }
+
+        @Override
+        public @NotNull String getUsage() {
+            return "/" + getName();
+        }
+
+        @Override
+        public boolean testPermission(@NotNull CommandSender target) {
+            if (getPermission() == null || getPermission().isEmpty()) {
+                return true; // No permission required
+            }
+            return target.hasPermission(getPermission());
+        }
+
+        @Override
+        public boolean testPermissionSilent(@NotNull CommandSender target) {
+            if (getPermission() == null || getPermission().isEmpty()) {
+                return true; // No permission required
+            }
+            return target.hasPermission(getPermission());
         }
 
         @Override
