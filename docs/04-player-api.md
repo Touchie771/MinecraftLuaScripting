@@ -273,5 +273,4 @@ end)
 1. Always check if a player exists before using their methods
 2. Use `isInstanceOf()` to check if the sender is a player
 3. Color codes use `§` symbol (e.g., `§a` for green, `§c` for red)
-4. Consider using cooldowns for commands that modify player state
-5. Check player permissions before performing administrative actions
+4. Check player permissions before performing administrative actions

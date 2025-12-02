@@ -171,7 +171,6 @@ end)
 1. Avoid expensive operations in frequently called events (like PlayerMoveEvent)
 2. Use conditions to filter events early
 3. Cache expensive calculations
-4. Consider using cooldowns for actions in high-frequency events
 
 ## Multiple Listeners
 

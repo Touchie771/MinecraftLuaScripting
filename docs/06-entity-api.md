@@ -332,5 +332,4 @@ Common entity types you can spawn:
 3. Use proper permissions for entity spawning commands
 4. Consider removing entities after they're no longer needed
 5. Check if entities are still alive before operating on them
-6. Use cooldowns for entity spawning commands
-7. Be careful with explosive entities like Creepers and Ghasts
+6. Be careful with explosive entities like Creepers and Ghasts

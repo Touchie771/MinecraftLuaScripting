@@ -176,11 +176,6 @@ on("PlayerMoveEvent", function(event)
     end
 end)
 
--- Use cooldowns for commands
-registerCommand("heavycommand", "plugin.heavy", 30, function(sender, args)
-    -- This command can only be used every 30 seconds
-end)
-
 -- Limit entity spawning
 for i = 1, math.min(amount, 10) do
     -- Spawn maximum 10 entities
@@ -286,4 +281,3 @@ If you encounter issues not covered here:
 7. Keep backups of working scripts
 8. Use descriptive variable and function names
 9. Comment complex logic
-10. Use cooldowns for resource-intensive commands

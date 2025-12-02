@@ -24,8 +24,8 @@ on("BlockBreakEvent", function(event)
     player:sendMessage("You broke a block!")
 end)
 
--- Register a command with 15 second cooldown
-registerCommand("hello", "permission.hello", 15, function(sender, args)
+-- Register a command
+registerCommand("hello", "permission.hello", function(sender, args)
     sender:sendMessage("Hello, " .. sender:getName() .. "!")
 end)
 ```

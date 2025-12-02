@@ -350,4 +350,3 @@ Common materials you can use:
 4. Use permissions for inventory manipulation commands
 5. Be careful with valuable items in commands
 6. Check if items are damaged before repairing
-7. Use cooldowns for resource-intensive inventory operations

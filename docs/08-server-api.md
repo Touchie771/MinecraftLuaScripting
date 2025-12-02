@@ -300,5 +300,4 @@ local isHardcore = server:isHardcore()
 3. Use proper permissions for server management commands
 4. Be careful with commands like `restart` and `reload`
 5. Consider the impact of commands on all players
-6. Use cooldowns for potentially disruptive commands
-7. Log important server operations for auditing
+6. Log important server operations for auditing
