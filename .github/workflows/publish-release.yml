@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       release_title:
-        description: 'Release title (e.g., v1.0.0)'
+        description: 'Release title (e.g., v1.1.0)'
         required: true
         type: string
       previous_tag:
@@ -57,7 +57,10 @@ jobs:
       - name: Find JAR file
         id: find_jar
         run: |
-          JAR_FILE=$(find build/libs -name "*.jar" -type f | head -n 1)
+          JAR_FILE=$(find build/libs -name "*-all.jar" -type f | head -n 1)
+          if [ -z "$JAR_FILE" ]; then
+            JAR_FILE=$(find build/libs -name "*.jar" -type f | head -n 1)
+          fi
           echo "jar_file=$JAR_FILE" >> $GITHUB_OUTPUT
           echo "jar_name=$(basename $JAR_FILE)" >> $GITHUB_OUTPUT
 
