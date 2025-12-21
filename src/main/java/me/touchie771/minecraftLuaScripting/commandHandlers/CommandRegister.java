@@ -5,12 +5,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.SimplePluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.lib.ThreeArgFunction;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class CommandRegister {
 
@@ -24,12 +28,71 @@ public class CommandRegister {
 
     private void setupCommandMap() {
         try {
-            Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-            commandMapField.setAccessible(true);
-            this.commandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
+            this.commandMap = resolveCommandMap();
+            if (this.commandMap == null) {
+                plugin.getLogger().severe("Failed to get CommandMap: resolved to null");
+            }
         } catch (Exception e) {
-            plugin.getLogger().severe("Failed to get CommandMap: " + e.getMessage());
+            plugin.getLogger().severe("Failed to get CommandMap: " + e);
         }
+    }
+
+    private CommandMap resolveCommandMap() {
+        // 1) Try CraftServer#getCommandMap() (public on CraftBukkit/Paper)
+        try {
+            Method getCommandMap = Bukkit.getServer().getClass().getMethod("getCommandMap");
+            Object result = getCommandMap.invoke(Bukkit.getServer());
+            if (result instanceof CommandMap cm) {
+                return cm;
+            }
+        } catch (Exception ignored) {
+            // fallback
+        }
+
+        // 2) Try field "commandMap" on server class hierarchy
+        try {
+            Field f = findField(Bukkit.getServer().getClass(), "commandMap");
+            if (f != null) {
+                f.setAccessible(true);
+                Object result = f.get(Bukkit.getServer());
+                if (result instanceof CommandMap cm) {
+                    return cm;
+                }
+            }
+        } catch (Exception ignored) {
+            // fallback
+        }
+
+        // 3) Try SimplePluginManager#commandMap
+        try {
+            PluginManager pm = Bukkit.getPluginManager();
+            if (pm instanceof SimplePluginManager) {
+                Field f = findField(pm.getClass(), "commandMap");
+                if (f != null) {
+                    f.setAccessible(true);
+                    Object result = f.get(pm);
+                    if (result instanceof CommandMap cm) {
+                        return cm;
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+            // fallback
+        }
+
+        return null;
+    }
+
+    private static Field findField(Class<?> startClass, String fieldName) {
+        Class<?> c = startClass;
+        while (c != null) {
+            try {
+                return c.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException ignored) {
+                c = c.getSuperclass();
+            }
+        }
+        return null;
     }
 
     public class Register extends ThreeArgFunction {
@@ -99,7 +162,11 @@ public class CommandRegister {
         public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
             try {
                 LuaValue senderVal = CoerceJavaToLua.coerce(sender);
-                LuaValue argsVal = CoerceJavaToLua.coerce(args);
+                LuaTable argsTable = new LuaTable();
+                for (int i = 0; i < args.length; i++) {
+                    argsTable.set(i + 1, LuaValue.valueOf(args[i]));
+                }
+                LuaValue argsVal = argsTable;
                 callback.call(senderVal, argsVal);
             } catch (Exception e) {
                 sender.sendMessage("§cError executing Lua command: " + e.getMessage());
