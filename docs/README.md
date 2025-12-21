@@ -2,6 +2,13 @@
 
 This plugin allows you to write Lua scripts to interact with Minecraft server events and create custom commands.
 
+## Global Variables
+
+- `plugin` - The plugin instance (JavaPlugin)
+- `Class(name)` - Returns a Java class by fully-qualified name (cached)
+
+`Class()` is intended for admin-only scripts and provides access to any class available on the server classpath.
+
 ## Table of Contents
 
 - [Getting Started](01-getting-started.md)

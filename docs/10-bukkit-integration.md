@@ -2,6 +2,23 @@
 
 The plugin provides direct access to Bukkit classes and enums, allowing you to use the full power of the Bukkit API from your Lua scripts.
 
+## Admin-only Java Class Access
+
+Lua scripts can access any Java class by name using:
+
+```lua
+local Bukkit = Class("org.bukkit.Bukkit")
+local Player = Class("org.bukkit.entity.Player")
+```
+
+This is intended for admin-only scripts. Any script with access to `Class()` can potentially access arbitrary Java APIs available on the server.
+
+The plugin instance is also exposed:
+
+```lua
+plugin:getLogger():info("Hello from Lua")
+```
+
 ## Available Bukkit Classes
 
 The following Bukkit classes are exposed as global variables in Lua:
