@@ -1,7 +1,7 @@
 name: MinecraftLuaScripting
 version: '1.1.0'
 main: me.touchie771.minecraftLuaScripting.MinecraftLuaScripting
-api-version: '1.21'
+api-version: '1.18'
 authors: [ Touchie771 ]
 description: A plugin that allows you to run Lua scripts in Minecraft.
 commands:
