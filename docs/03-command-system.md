@@ -39,7 +39,8 @@ end)
 
 ```lua
 registerCommand("fly", "plugin.fly", function(sender, args)
-    if sender:isInstanceOf(org.bukkit.entity.Player) then
+    local Player = Class("org.bukkit.entity.Player")
+    if Player:isInstance(sender) then
         local player = sender
         player:setAllowFlight(true)
         player:sendMessage("Fly mode enabled!")

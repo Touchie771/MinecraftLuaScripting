@@ -43,7 +43,7 @@ end
 ### Broadcast Command
 
 ```lua
-registerCommand("broadcast", "plugin.broadcast", 30, function(sender, args)
+registerCommand("broadcast", "plugin.broadcast", function(sender, args)
     if not args[1] then
         sender:sendMessage("Usage: /broadcast <message>")
         return
@@ -58,7 +58,7 @@ end)
 ### Online Players Command
 
 ```lua
-registerCommand("online", nil, 5, function(sender, args)
+registerCommand("online", nil, function(sender, args)
     local players = getOnlinePlayers()
     local count = #players
     
@@ -83,7 +83,7 @@ end)
 ### Server Status Command
 
 ```lua
-registerCommand("serverinfo", nil, 10, function(sender, args)
+registerCommand("serverinfo", nil, function(sender, args)
     local server = Bukkit:getServer()
     local players = getOnlinePlayers()
     
@@ -108,7 +108,7 @@ end
 ### Execute Command As Player
 
 ```lua
-registerCommand("sudo", "plugin.sudo", 0, function(sender, args)
+registerCommand("sudo", "plugin.sudo", function(sender, args)
     if not args[1] or not args[2] then
         sender:sendMessage("Usage: /sudo <player> <command>")
         return
@@ -131,7 +131,7 @@ end)
 ### Server Restart Command
 
 ```lua
-registerCommand("restartserver", "plugin.restart", 60, function(sender, args)
+registerCommand("restartserver", "plugin.restart", function(sender, args)
     if not args[1] or args[1] ~= "confirm" then
         sender:sendMessage("§cThis will restart the server!")
         sender:sendMessage("§cUse /restartserver confirm to proceed.")
@@ -154,7 +154,7 @@ end)
 ### Plugin Management
 
 ```lua
-registerCommand("plugin", "plugin.manage", 0, function(sender, args)
+registerCommand("plugin", "plugin.manage", function(sender, args)
     if not args[1] then
         sender:sendMessage("Usage: /plugin <list|enable|disable|reload> [plugin]")
         return
@@ -220,7 +220,7 @@ end)
 ### Whitelist Management
 
 ```lua
-registerCommand("whitelist", "plugin.whitelist", 0, function(sender, args)
+registerCommand("whitelist", "plugin.whitelist", function(sender, args)
     if not args[1] then
         sender:sendMessage("Usage: /whitelist <add|remove|on|off|list> [player]")
         return

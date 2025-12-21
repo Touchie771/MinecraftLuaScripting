@@ -230,8 +230,9 @@ server:setWhitelist(true)
 local protectedBlocks = {}
 
 -- Protect blocks with a command
-registerCommand("protect", "plugin.protect", 0, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("protect", "plugin.protect", function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("Players only!")
         return
     end
@@ -272,8 +273,9 @@ end)
 
 ```lua
 -- Spawn custom mobs with effects
-registerCommand("spawnboss", "plugin.spawnboss", 300, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("spawnboss", "plugin.spawnboss", function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("Players only!")
         return
     end
@@ -303,7 +305,7 @@ end)
 ### World Border System
 
 ```lua
-registerCommand("setborder", "plugin.border", 0, function(sender, args)
+registerCommand("setborder", "plugin.border", function(sender, args)
     if not args[1] then
         sender:sendMessage("Usage: /setborder <size>")
         return

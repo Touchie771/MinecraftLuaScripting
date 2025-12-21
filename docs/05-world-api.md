@@ -148,8 +148,9 @@ local nearbyEntities = world:getNearbyEntities(location, 10, 10, 10)
 ### World Information Command
 
 ```lua
-registerCommand("worldinfo", nil, 5, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("worldinfo", nil, function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -171,8 +172,9 @@ end)
 ### Set Spawn Command
 
 ```lua
-registerCommand("setspawn", "plugin.setspawn", 0, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("setspawn", "plugin.setspawn", function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -189,8 +191,9 @@ end)
 ### Explosion Command
 
 ```lua
-registerCommand("explode", "plugin.explode", 30, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("explode", "plugin.explode", function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -210,14 +213,15 @@ end)
 ### Weather Control
 
 ```lua
-registerCommand("weather", "plugin.weather", 60, function(sender, args)
+registerCommand("weather", "plugin.weather", function(sender, args)
     if not args[1] then
         sender:sendMessage("Usage: /weather <clear|rain|thunder>")
         return
     end
     
     local world
-    if sender:isInstanceOf(org.bukkit.entity.Player) then
+    local Player = Class("org.bukkit.entity.Player")
+    if Player:isInstance(sender) then
         world = sender:getWorld()
     else
         world = getWorld("world")
@@ -246,14 +250,15 @@ end)
 ### Time Control
 
 ```lua
-registerCommand("time", "plugin.time", 10, function(sender, args)
+registerCommand("time", "plugin.time", function(sender, args)
     if not args[1] then
         sender:sendMessage("Usage: /time <day|night|noon|midnight>")
         return
     end
     
     local world
-    if sender:isInstanceOf(org.bukkit.entity.Player) then
+    local Player = Class("org.bukkit.entity.Player")
+    if Player:isInstance(sender) then
         world = sender:getWorld()
     else
         world = getWorld("world")

@@ -120,7 +120,7 @@ local lore = item:getItemMeta():getLore()
 ### Give Item Command
 
 ```lua
-registerCommand("give", "plugin.give", 0, function(sender, args)
+registerCommand("give", "plugin.give", function(sender, args)
     if not args[1] or not args[2] then
         sender:sendMessage("Usage: /give <player> <item> [amount]")
         return
@@ -163,8 +163,9 @@ local kits = {
     }
 }
 
-registerCommand("kit", nil, 60, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("kit", nil, function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -195,8 +196,9 @@ end)
 ### Inventory Check Command
 
 ```lua
-registerCommand("invsee", "plugin.invsee", 0, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("invsee", "plugin.invsee", function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -229,8 +231,9 @@ end)
 ### Clear Inventory Command
 
 ```lua
-registerCommand("clearinv", "plugin.clearinv", 0, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("clearinv", "plugin.clearinv", function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -265,8 +268,9 @@ end)
 ### Repair Command
 
 ```lua
-registerCommand("repair", "plugin.repair", 30, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("repair", "plugin.repair", function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -297,8 +301,9 @@ end)
 ### Sort Inventory Command
 
 ```lua
-registerCommand("sortinv", nil, 5, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("sortinv", nil, function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("This command can only be used by players.")
         return
     end

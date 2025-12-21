@@ -119,8 +119,9 @@ local mainHand = equipment:getItemInMainHand()
 ### Spawn Mob Command
 
 ```lua
-registerCommand("spawnmob", "plugin.spawnmob", 10, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("spawnmob", "plugin.spawnmob", function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -161,8 +162,9 @@ end)
 ### Butcher Command
 
 ```lua
-registerCommand("butcher", "plugin.butcher", 30, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("butcher", "plugin.butcher", function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -192,8 +194,9 @@ end)
 ### Entity Info Command
 
 ```lua
-registerCommand("entityinfo", "plugin.entityinfo", 0, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("entityinfo", "plugin.entityinfo", function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -240,7 +243,8 @@ on("PlayerInteractEntityEvent", function(event)
     local player = event:getPlayer()
     local entity = event:getRightClicked()
     
-    if player:isSneaking() and entity:isInstanceOf(org.bukkit.entity.LivingEntity) then
+    local LivingEntity = Class("org.bukkit.entity.LivingEntity")
+    if player:isSneaking() and LivingEntity:isInstance(entity) then
         if entity:getType() ~= EntityType.PLAYER then
             -- Make entity a pet
             entity:setCustomName(player:getName() .. "'s Pet")
@@ -253,8 +257,9 @@ on("PlayerInteractEntityEvent", function(event)
     end
 end)
 
-registerCommand("pet", nil, 0, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("pet", nil, function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("This command can only be used by players.")
         return
     end

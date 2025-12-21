@@ -39,4 +39,4 @@ end)
 
 ## Script Location
 
-All Lua scripts should be placed in the `LuaScripts` folder in your server's root directory. Scripts are automatically loaded when the server starts or when using the `/luascript reload` command.
+All Lua scripts should be placed in the `LuaScripts` folder in your server's root directory. Scripts are automatically loaded when the server starts or when using the `/luascript reloadall` command.

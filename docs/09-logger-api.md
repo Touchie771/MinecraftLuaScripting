@@ -66,7 +66,7 @@ end)
 
 ```lua
 -- Warn about deprecated usage
-registerCommand("oldcommand", nil, 0, function(sender, args)
+registerCommand("oldcommand", nil, function(sender, args)
     warning("Player " .. sender:getName() .. " used deprecated command 'oldcommand'")
     sender:sendMessage("This command is deprecated. Please use 'newcommand' instead.")
 end)
@@ -84,7 +84,7 @@ end)
 
 ```lua
 -- Log critical errors
-registerCommand("riskycommand", "plugin.risky", 0, function(sender, args)
+registerCommand("riskycommand", "plugin.risky", function(sender, args)
     local success, err = pcall(function()
         -- Risky operation
         local result = someRiskyFunction(args[1])
@@ -134,7 +134,7 @@ on("EntityDamageEvent", function(event)
 end)
 
 -- Toggle debug mode with command
-registerCommand("debug", "plugin.debug", 0, function(sender, args)
+registerCommand("debug", "plugin.debug", function(sender, args)
     if not sender:hasPermission("plugin.debug.toggle") then
         sender:sendMessage("§cNo permission!")
         return
@@ -184,7 +184,7 @@ local function measurePerformance(func, name)
 end
 
 -- Usage
-registerCommand("heavycommand", "plugin.heavy", 0, function(sender, args)
+registerCommand("heavycommand", "plugin.heavy", function(sender, args)
     measurePerformance(function()
         -- Heavy operation here
         for i = 1, 10000 do
@@ -206,7 +206,7 @@ function audit(action, player, details)
 end
 
 -- Log important commands
-registerCommand("ban", "plugin.ban", 0, function(sender, args)
+registerCommand("ban", "plugin.ban", function(sender, args)
     if not args[1] then
         sender:sendMessage("Usage: /ban <player> [reason]")
         return

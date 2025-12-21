@@ -4,30 +4,27 @@
 
 The plugin provides built-in administrative commands for managing Lua scripts.
 
-### /luascript reload
+### /luascript reloadall
 
 Reloads all Lua scripts from the `LuaScripts` folder.
 
-**Permission:** `luascript.reload` (default: OP)
+**Permission:** `luascript.admin` (default: OP)
 
 **Usage:**
 ```
-/luascript reload
+/luascript reloadall
 ```
 
 **What it does:**
 - Unregisters all existing event listeners
-- Clears all registered commands
 - Reloads all `.lua` files from the `LuaScripts` folder
 - Logs the loading process to console
 
 **Example:**
 ```
-/luascript reload
-[INFO] Reloading Lua scripts...
-[INFO] Loaded 5 Lua scripts
-[INFO] Registered 3 commands
-[INFO] Registered 12 event listeners
+/luascript reloadall
+§eReloading all scripts...
+§aReloaded all scripts!
 ```
 
 ## Common Issues and Solutions
@@ -77,7 +74,7 @@ if not callbackVal.isfunction() then
 end
 
 -- Use unique command names
-registerCommand("my_unique_command", nil, 0, callback)
+registerCommand("my_unique_command", nil, callback)
 
 -- Check for errors during registration
 if commandMap == nil then
@@ -231,7 +228,8 @@ end
 
 ```lua
 -- Check if object is expected type
-if not player:isInstanceOf(org.bukkit.entity.Player) then
+local Player = Class("org.bukkit.entity.Player")
+if not Player:isInstance(player) then
     sender:sendMessage("This command requires a player!")
     return
 end
@@ -254,7 +252,7 @@ function debug(message)
 end
 
 -- Toggle with command
-registerCommand("debug", "plugin.debug", 0, function(sender, args)
+registerCommand("debug", "plugin.debug", function(sender, args)
     DEBUG = not DEBUG
     sender:sendMessage("Debug mode: " .. (DEBUG and "ON" or "OFF"))
 end)

@@ -202,8 +202,9 @@ end)
 ### Player Stats Command
 
 ```lua
-registerCommand("stats", nil, 10, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("stats", nil, function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -223,8 +224,9 @@ end)
 ### Teleport to Player
 
 ```lua
-registerCommand("tp", "plugin.tp", 5, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("tp", "plugin.tp", function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -249,8 +251,9 @@ end)
 ### Heal Command
 
 ```lua
-registerCommand("heal", "plugin.heal", 30, function(sender, args)
-    if not sender:isInstanceOf(org.bukkit.entity.Player) then
+registerCommand("heal", "plugin.heal", function(sender, args)
+    local Player = Class("org.bukkit.entity.Player")
+    if not Player:isInstance(sender) then
         sender:sendMessage("This command can only be used by players.")
         return
     end
