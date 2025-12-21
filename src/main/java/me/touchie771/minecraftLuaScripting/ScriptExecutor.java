@@ -9,13 +9,17 @@ import me.touchie771.minecraftLuaScripting.api.WorldApi;
 import me.touchie771.minecraftLuaScripting.commandHandlers.CommandRegister;
 import me.touchie771.minecraftLuaScripting.eventHandlers.EventListener;
 import org.luaj.vm2.Globals;
+import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JsePlatform;
+import org.luaj.vm2.lib.OneArgFunction;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class ScriptExecutor {
@@ -58,6 +62,28 @@ public class ScriptExecutor {
         }
     }
 
+    private static final class JavaClassBinder extends OneArgFunction {
+        private final Map<String, LuaValue> cache = new HashMap<>();
+
+        @Override
+        public LuaValue call(LuaValue classNameVal) {
+            String className = classNameVal.checkjstring();
+            LuaValue cached = cache.get(className);
+            if (cached != null) {
+                return cached;
+            }
+
+            try {
+                Class<?> clazz = Class.forName(className);
+                LuaValue coerced = CoerceJavaToLua.coerce(clazz);
+                cache.put(className, coerced);
+                return coerced;
+            } catch (ClassNotFoundException e) {
+                return LuaValue.error("Class not found: " + className);
+            }
+        }
+    }
+
     private static void saveExampleScripts(MinecraftLuaScripting plugin) {
         try {
             File exampleScript = new File(scriptsFolder, "example.lua");
@@ -80,6 +106,9 @@ public class ScriptExecutor {
         globals.set("Material", CoerceJavaToLua.coerce(org.bukkit.Material.class));
         globals.set("EntityType", CoerceJavaToLua.coerce(org.bukkit.entity.EntityType.class));
         globals.set("GameMode", CoerceJavaToLua.coerce(org.bukkit.GameMode.class));
+
+        globals.set("Class", new JavaClassBinder());
+        globals.set("plugin", CoerceJavaToLua.coerce(plugin));
 
         // Player API (Factories & Helpers)
         globals.set("getPlayer", new PlayerApi.GetPlayer());
