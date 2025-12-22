@@ -4,6 +4,7 @@ import me.touchie771.minecraftLuaScripting.api.EntityApi;
 import me.touchie771.minecraftLuaScripting.api.InventoryApi;
 import me.touchie771.minecraftLuaScripting.api.LoggerApi;
 import me.touchie771.minecraftLuaScripting.api.PlayerApi;
+import me.touchie771.minecraftLuaScripting.api.SchedulerApi;
 import me.touchie771.minecraftLuaScripting.api.ServerApi;
 import me.touchie771.minecraftLuaScripting.api.WorldApi;
 import me.touchie771.minecraftLuaScripting.commandHandlers.CommandRegister;
@@ -30,6 +31,7 @@ public class ScriptExecutor {
 
     public static void reloadAll(MinecraftLuaScripting plugin) {
         CommandRegister.clearLuaCommands(plugin);
+        SchedulerApi.cancelAllTasks(plugin);
         if (eventListener != null) {
             org.bukkit.event.HandlerList.unregisterAll(eventListener);
         }
@@ -139,6 +141,14 @@ public class ScriptExecutor {
         // Event API
         eventListener = new EventListener(plugin);
         globals.set("on", eventListener.new On());
+
+        // Scheduler API
+        globals.set("runLater", new SchedulerApi.RunLater(plugin));
+        globals.set("runRepeating", new SchedulerApi.RunRepeating(plugin));
+        globals.set("runAsync", new SchedulerApi.RunAsync(plugin));
+        globals.set("runAsyncLater", new SchedulerApi.RunAsyncLater(plugin));
+        globals.set("cancelTask", new SchedulerApi.CancelTask(plugin));
+        globals.set("cancelAllTasks", new SchedulerApi.CancelAllTasks(plugin));
 
         // Command API
         globals.set("registerCommand", new CommandRegister(plugin).new Register());
