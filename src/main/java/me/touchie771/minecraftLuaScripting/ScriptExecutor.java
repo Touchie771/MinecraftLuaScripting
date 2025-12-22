@@ -29,6 +29,7 @@ public class ScriptExecutor {
     private static EventListener eventListener;
 
     public static void reloadAll(MinecraftLuaScripting plugin) {
+        CommandRegister.clearLuaCommands(plugin);
         if (eventListener != null) {
             org.bukkit.event.HandlerList.unregisterAll(eventListener);
         }

@@ -15,8 +15,14 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class CommandRegister {
+
+    private static final Map<String, Set<String>> LUA_COMMANDS_BY_PLUGIN = new HashMap<>();
 
     private final MinecraftLuaScripting plugin;
     private CommandMap commandMap;
@@ -95,6 +101,68 @@ public class CommandRegister {
         return null;
     }
 
+    public static void clearLuaCommands(MinecraftLuaScripting plugin) {
+        String pluginKey = plugin.getName();
+        Set<String> names = LUA_COMMANDS_BY_PLUGIN.remove(pluginKey);
+        if (names == null || names.isEmpty()) {
+            return;
+        }
+
+        CommandRegister resolver = new CommandRegister(plugin);
+        CommandMap cm = resolver.commandMap;
+        if (cm == null) {
+            plugin.getLogger().warning("Cannot clear Lua commands: CommandMap not initialized");
+            return;
+        }
+
+        Map<String, Command> knownCommands = resolveKnownCommands(cm);
+        for (String name : names) {
+            try {
+                unregisterCommand(cm, knownCommands, pluginKey, name);
+            } catch (Exception e) {
+                plugin.getLogger().warning("Failed to unregister Lua command '" + name + "': " + e);
+            }
+        }
+    }
+
+    private static void unregisterCommand(CommandMap cm, Map<String, Command> knownCommands, String pluginKey, String name) {
+        if (knownCommands == null) {
+            return;
+        }
+
+        Command cmd = knownCommands.get(name);
+        if (cmd != null) {
+            cmd.unregister(cm);
+        }
+
+        Command cmdNamespaced = knownCommands.get(pluginKey.toLowerCase() + ":" + name);
+        if (cmdNamespaced != null) {
+            cmdNamespaced.unregister(cm);
+        }
+
+        knownCommands.remove(name);
+        knownCommands.remove(pluginKey.toLowerCase() + ":" + name);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, Command> resolveKnownCommands(CommandMap commandMap) {
+        try {
+            // Usually org.bukkit.command.SimpleCommandMap
+            Field f = findField(commandMap.getClass(), "knownCommands");
+            if (f == null) {
+                return null;
+            }
+            f.setAccessible(true);
+            Object val = f.get(commandMap);
+            if (val instanceof Map) {
+                return (Map<String, Command>) val;
+            }
+        } catch (Exception ignored) {
+            // ignore
+        }
+        return null;
+    }
+
     public class Register extends ThreeArgFunction {
         @Override
         public LuaValue call(LuaValue nameVal, LuaValue permissionVal, LuaValue callbackVal) {
@@ -113,8 +181,15 @@ public class CommandRegister {
                 return LuaValue.error("CommandMap not initialized");
             }
 
+            // If a previous Lua reload already registered this name, replace it.
+            Map<String, Command> knownCommands = resolveKnownCommands(commandMap);
+            unregisterCommand(commandMap, knownCommands, plugin.getName(), commandName);
+
             LuaCommand command = new LuaCommand(commandName, permission, callbackVal);
             commandMap.register(plugin.getName(), command);
+            LUA_COMMANDS_BY_PLUGIN
+                    .computeIfAbsent(plugin.getName(), k -> new HashSet<>())
+                    .add(commandName);
             plugin.getLogger().info("Registered command: " + commandName + " with permission: " + permission);
             
             return LuaValue.TRUE;
