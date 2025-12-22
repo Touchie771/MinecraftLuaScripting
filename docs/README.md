@@ -6,6 +6,12 @@ This plugin allows you to write Lua scripts to interact with Minecraft server ev
 
 - `plugin` - The plugin instance (JavaPlugin)
 - `Class(name)` - Returns a Java class by fully-qualified name (cached)
+- `runLater(ticks, fn)` - Run a Lua callback on the main thread after `ticks`
+- `runRepeating(delayTicks, periodTicks, fn)` - Run a Lua callback repeatedly on the main thread
+- `runAsync(fn)` - Run a Lua callback asynchronously (**do not call Bukkit API async**)
+- `runAsyncLater(ticks, fn)` - Run a Lua callback asynchronously after `ticks`
+- `cancelTask(taskId)` - Cancel a scheduled task by id
+- `cancelAllTasks(nil)` - Cancel all tasks created by scripts
 
 `Class()` is intended for admin-only scripts and provides access to any class available on the server classpath.
 

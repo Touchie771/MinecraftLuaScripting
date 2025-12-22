@@ -17,6 +17,8 @@ Reloads all Lua scripts from the `LuaScripts` folder.
 
 **What it does:**
 - Unregisters all existing event listeners
+- Clears and re-registers commands created via `registerCommand(...)`
+- Cancels tasks created by scripts via `runLater/runRepeating/runAsync*`
 - Reloads all `.lua` files from the `LuaScripts` folder
 - Logs the loading process to console
 
@@ -80,6 +82,35 @@ registerCommand("my_unique_command", nil, callback)
 if commandMap == nil then
     error("CommandMap not initialized")
 end
+```
+
+### Scheduler and Delays
+
+If you see errors like `no coercible public method` when trying to use the Bukkit scheduler, LuaJ could not coerce a Lua function into a Java `Runnable`.
+
+Use the built-in scheduler helpers instead:
+
+```lua
+-- Run once on the main thread after 60 ticks (3 seconds)
+runLater(60, function()
+    info("3 seconds later")
+end)
+
+-- Run repeatedly on the main thread
+local id = runRepeating(20, 20, function()
+    info("every second")
+end)
+
+-- Cancel the repeating task
+cancelTask(id)
+
+-- Async work (do NOT call Bukkit API async)
+runAsync(function()
+    -- heavy work here
+    runLater(0, function()
+        info("back on main thread")
+    end)
+end)
 ```
 
 ### Permission Errors
@@ -227,9 +258,9 @@ end
 ### 3. Check Object Types
 
 ```lua
--- Check if object is expected type
-local Player = Class("org.bukkit.entity.Player")
-if not Player:isInstance(player) then
+-- Avoid Class#isInstance checks in LuaJ; use a safe capability check instead.
+local ok = pcall(function() return sender:getUniqueId() end)
+if not ok then
     sender:sendMessage("This command requires a player!")
     return
 end

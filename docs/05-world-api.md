@@ -149,8 +149,8 @@ local nearbyEntities = world:getNearbyEntities(location, 10, 10, 10)
 
 ```lua
 registerCommand("worldinfo", nil, function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -173,8 +173,8 @@ end)
 
 ```lua
 registerCommand("setspawn", "plugin.setspawn", function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -192,8 +192,8 @@ end)
 
 ```lua
 registerCommand("explode", "plugin.explode", function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -220,8 +220,8 @@ registerCommand("weather", "plugin.weather", function(sender, args)
     end
     
     local world
-    local Player = Class("org.bukkit.entity.Player")
-    if Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if ok then
         world = sender:getWorld()
     else
         world = getWorld("world")
@@ -257,8 +257,8 @@ registerCommand("time", "plugin.time", function(sender, args)
     end
     
     local world
-    local Player = Class("org.bukkit.entity.Player")
-    if Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if ok then
         world = sender:getWorld()
     else
         world = getWorld("world")

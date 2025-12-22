@@ -203,8 +203,8 @@ end)
 
 ```lua
 registerCommand("stats", nil, function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -225,8 +225,8 @@ end)
 
 ```lua
 registerCommand("tp", "plugin.tp", function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -252,8 +252,8 @@ end)
 
 ```lua
 registerCommand("heal", "plugin.heal", function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -274,6 +274,6 @@ end)
 ## Tips and Best Practices
 
 1. Always check if a player exists before using their methods
-2. Use `isInstanceOf()` to check if the sender is a player
+2. Avoid Java `Class#isInstance` checks in LuaJ; use a safe capability check (e.g., `pcall(function() return sender:getUniqueId() end)`)
 3. Color codes use `§` symbol (e.g., `§a` for green, `§c` for red)
 4. Check player permissions before performing administrative actions

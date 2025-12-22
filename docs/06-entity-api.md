@@ -120,8 +120,8 @@ local mainHand = equipment:getItemInMainHand()
 
 ```lua
 registerCommand("spawnmob", "plugin.spawnmob", function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -163,8 +163,8 @@ end)
 
 ```lua
 registerCommand("butcher", "plugin.butcher", function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -195,8 +195,8 @@ end)
 
 ```lua
 registerCommand("entityinfo", "plugin.entityinfo", function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -242,9 +242,8 @@ local pets = {}
 on("PlayerInteractEntityEvent", function(event)
     local player = event:getPlayer()
     local entity = event:getRightClicked()
-    
-    local LivingEntity = Class("org.bukkit.entity.LivingEntity")
-    if player:isSneaking() and LivingEntity:isInstance(entity) then
+
+    if player:isSneaking() and entity ~= nil and entity:getType():name() ~= "PLAYER" then
         if entity:getType() ~= EntityType.PLAYER then
             -- Make entity a pet
             entity:setCustomName(player:getName() .. "'s Pet")
@@ -258,8 +257,8 @@ on("PlayerInteractEntityEvent", function(event)
 end)
 
 registerCommand("pet", nil, function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("This command can only be used by players.")
         return
     end

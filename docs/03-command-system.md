@@ -25,6 +25,8 @@ function(sender, args)
 end
 ```
 
+`args` is a normal Lua table (1-indexed). For example, the first argument is `args[1]`.
+
 ## Basic Command Examples
 
 ### Simple Command
@@ -39,14 +41,15 @@ end)
 
 ```lua
 registerCommand("fly", "plugin.fly", function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if Player:isInstance(sender) then
-        local player = sender
-        player:setAllowFlight(true)
-        player:sendMessage("Fly mode enabled!")
-    else
+    -- Avoid Class(...):isInstance in LuaJ; use a safe capability check instead.
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("This command can only be used by players.")
+        return
     end
+
+    sender:setAllowFlight(true)
+    sender:sendMessage("Fly mode enabled!")
 end)
 ```
 

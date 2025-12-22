@@ -164,8 +164,8 @@ local kits = {
 }
 
 registerCommand("kit", nil, function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -197,8 +197,8 @@ end)
 
 ```lua
 registerCommand("invsee", "plugin.invsee", function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -232,8 +232,8 @@ end)
 
 ```lua
 registerCommand("clearinv", "plugin.clearinv", function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -269,8 +269,8 @@ end)
 
 ```lua
 registerCommand("repair", "plugin.repair", function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("This command can only be used by players.")
         return
     end
@@ -302,8 +302,8 @@ end)
 
 ```lua
 registerCommand("sortinv", nil, function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("This command can only be used by players.")
         return
     end

@@ -231,8 +231,8 @@ local protectedBlocks = {}
 
 -- Protect blocks with a command
 registerCommand("protect", "plugin.protect", function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("Players only!")
         return
     end
@@ -274,8 +274,8 @@ end)
 ```lua
 -- Spawn custom mobs with effects
 registerCommand("spawnboss", "plugin.spawnboss", function(sender, args)
-    local Player = Class("org.bukkit.entity.Player")
-    if not Player:isInstance(sender) then
+    local ok = pcall(function() return sender:getUniqueId() end)
+    if not ok then
         sender:sendMessage("Players only!")
         return
     end
