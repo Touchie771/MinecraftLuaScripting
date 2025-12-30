@@ -20,6 +20,6 @@ public final class MinecraftLuaScripting extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        ScriptExecutor.teardown(this);
+        ScriptExecutor.cleanup(this);
     }
 }
