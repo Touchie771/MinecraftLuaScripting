@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       release_title:
-        description: 'Release title (e.g., v1.1.1)'
+        description: 'Release title (e.g., v1.1.2)'
         required: true
         type: string
       previous_tag:
