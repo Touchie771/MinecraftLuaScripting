@@ -9,6 +9,7 @@ import me.touchie771.minecraftLuaScripting.api.ServerApi;
 import me.touchie771.minecraftLuaScripting.api.WorldApi;
 import me.touchie771.minecraftLuaScripting.commandHandlers.CommandRegister;
 import me.touchie771.minecraftLuaScripting.eventHandlers.EventListener;
+import org.bukkit.Bukkit;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
@@ -29,19 +30,41 @@ public class ScriptExecutor {
     private static Globals globals = JsePlatform.standardGlobals();
     private static EventListener eventListener;
 
-    public static void reloadAll(MinecraftLuaScripting plugin) {
-        CommandRegister.clearLuaCommands(plugin);
-        SchedulerApi.cancelAllTasks(plugin);
-        if (eventListener != null) {
-            org.bukkit.event.HandlerList.unregisterAll(eventListener);
+    public static void cleanup(MinecraftLuaScripting plugin) {
+        try {
+            CommandRegister.clearLuaCommands(plugin);
+        } catch (Exception e) {
+            plugin.getLogger().warning("Failed to clear Lua commands: " + e);
         }
-        
+
+        try {
+            SchedulerApi.cancelAllTasks(plugin);
+        } catch (Exception e) {
+            plugin.getLogger().warning("Failed to cancel Lua tasks: " + e);
+        }
+
+        try {
+            if (eventListener != null) {
+                org.bukkit.event.HandlerList.unregisterAll(eventListener);
+            }
+        } catch (Exception e) {
+            plugin.getLogger().warning("Failed to unregister Lua event listeners: " + e);
+        } finally {
+            eventListener = null;
+        }
+
         globals = JsePlatform.standardGlobals();
-        setup(plugin);
+    }
+
+    public static void reloadAll(MinecraftLuaScripting plugin) {
+        cleanup(plugin);
+        if (!setup(plugin)) {
+            return;
+        }
         executeScripts();
     }
 
-    public static void setup(MinecraftLuaScripting plugin) {
+    public static boolean setup(MinecraftLuaScripting plugin) {
         loadApi(plugin);
 
         if (!scriptsFolder.exists()) {
@@ -49,12 +72,14 @@ public class ScriptExecutor {
                 plugin.getLogger().info("Created scripts folder");
             }
             else {
-                plugin.getLogger().severe("Failed to create scripts folder");
-                plugin.onDisable();
+                plugin.getLogger().severe("Failed to create scripts folder: " + scriptsFolder.getAbsolutePath());
+                Bukkit.getPluginManager().disablePlugin(plugin);
+                return false;
             }
         }
 
         saveExampleScripts(plugin);
+        return true;
     }
 
     public static void executeScripts() {
