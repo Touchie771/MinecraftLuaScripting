@@ -20,6 +20,7 @@ public record LuaScriptCommand(MinecraftLuaScripting plugin) implements CommandE
             sender.sendMessage("§cUsage: /luascript <reloadall|list>");
             return true;
         }
+        if (!sender.hasPermission("luascript.admin")) return true;
 
         String sub = args[0].toLowerCase();
 
