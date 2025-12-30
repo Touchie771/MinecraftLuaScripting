@@ -29,14 +29,34 @@ public class ScriptExecutor {
     private static Globals globals = JsePlatform.standardGlobals();
     private static EventListener eventListener;
 
-    public static void reloadAll(MinecraftLuaScripting plugin) {
-        CommandRegister.clearLuaCommands(plugin);
-        SchedulerApi.cancelAllTasks(plugin);
-        if (eventListener != null) {
-            org.bukkit.event.HandlerList.unregisterAll(eventListener);
+    public static void cleanup(MinecraftLuaScripting plugin) {
+        try {
+            CommandRegister.clearLuaCommands(plugin);
+        } catch (Exception e) {
+            plugin.getLogger().warning("Failed to clear Lua commands: " + e);
         }
-        
+
+        try {
+            SchedulerApi.cancelAllTasks(plugin);
+        } catch (Exception e) {
+            plugin.getLogger().warning("Failed to cancel Lua tasks: " + e);
+        }
+
+        try {
+            if (eventListener != null) {
+                org.bukkit.event.HandlerList.unregisterAll(eventListener);
+            }
+        } catch (Exception e) {
+            plugin.getLogger().warning("Failed to unregister Lua event listeners: " + e);
+        } finally {
+            eventListener = null;
+        }
+
         globals = JsePlatform.standardGlobals();
+    }
+
+    public static void reloadAll(MinecraftLuaScripting plugin) {
+        cleanup(plugin);
         setup(plugin);
         executeScripts();
     }
