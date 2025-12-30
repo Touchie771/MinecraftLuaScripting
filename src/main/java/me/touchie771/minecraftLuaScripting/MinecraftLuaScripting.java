@@ -12,7 +12,7 @@ public final class MinecraftLuaScripting extends JavaPlugin {
         if (!ScriptExecutor.setup(this)) {
             return;
         }
-        ScriptExecutor.executeScripts();
+        ScriptExecutor.executeScripts(this);
         
         Objects.requireNonNull(getCommand("luascript")).setExecutor(new LuaScriptCommand(this));
         Objects.requireNonNull(getCommand("luascript")).setTabCompleter(new LuaScriptCommand(this));

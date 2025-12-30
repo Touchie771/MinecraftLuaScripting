@@ -20,9 +20,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class ScriptExecutor {
 
@@ -61,9 +62,10 @@ public class ScriptExecutor {
         if (!setup(plugin)) {
             return;
         }
-        executeScripts();
+        executeScripts(plugin);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean setup(MinecraftLuaScripting plugin) {
         loadApi(plugin);
 
@@ -82,10 +84,25 @@ public class ScriptExecutor {
         return true;
     }
 
-    public static void executeScripts() {
-        for (File script : Objects.requireNonNull(scriptsFolder.listFiles())) {
-            if (script.getName().endsWith(".lua")) {
+    public static void executeScripts(MinecraftLuaScripting plugin) {
+        if (!scriptsFolder.exists() || !scriptsFolder.isDirectory()) {
+            plugin.getLogger().warning("Scripts folder is missing or not a directory: " + scriptsFolder.getAbsolutePath());
+            return;
+        }
+
+        File[] scripts = scriptsFolder.listFiles((dir, name) -> name.endsWith(".lua"));
+        if (scripts == null) {
+            plugin.getLogger().warning("Failed to list scripts in folder: " + scriptsFolder.getAbsolutePath());
+            return;
+        }
+
+        Arrays.sort(scripts, Comparator.comparing(File::getName, String.CASE_INSENSITIVE_ORDER));
+
+        for (File script : scripts) {
+            try {
                 globals.loadfile(script.toPath().toString()).call();
+            } catch (Exception e) {
+                plugin.getLogger().severe("Failed to execute Lua script '" + script.getName() + "': " + e);
             }
         }
     }
