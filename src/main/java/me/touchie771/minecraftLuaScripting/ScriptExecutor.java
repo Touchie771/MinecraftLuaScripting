@@ -199,4 +199,74 @@ public class ScriptExecutor {
     public static File getScriptsFolder() {
         return scriptsFolder;
     }
+
+    /**
+     * Executes a single Lua script file.
+     * Note: This does not clean up any previously registered resources from this script.
+     * Use reloadScript for proper cleanup and reload.
+     *
+     * @param plugin The plugin instance
+     * @param scriptName The name of the script file (must end with .lua)
+     * @return true if the script executed successfully, false otherwise
+     */
+    public static boolean runScript(MinecraftLuaScripting plugin, String scriptName) {
+        if (!scriptName.endsWith(".lua")) {
+            scriptName += ".lua";
+        }
+
+        File scriptFile = new File(scriptsFolder, scriptName);
+        
+        if (!scriptFile.exists() || !scriptFile.isFile()) {
+            plugin.getLogger().warning("Script file not found: " + scriptName);
+            return false;
+        }
+
+        try {
+            globals.loadfile(scriptFile.toPath().toString()).call();
+            plugin.getLogger().info("Successfully executed script: " + scriptName);
+            return true;
+        } catch (Exception e) {
+            plugin.getLogger().severe("Failed to execute Lua script '" + scriptName + "': " + e);
+            return false;
+        }
+    }
+
+    /**
+     * Reloads a single script by cleaning up all resources and then re-executing only the target script.
+     * This is a simple implementation that cleans up globally and only runs the specific script.
+     *
+     * @param plugin The plugin instance
+     * @param scriptName The name of the script file (must end with .lua)
+     * @return true if the script reloaded successfully, false otherwise
+     */
+    public static boolean reloadScript(MinecraftLuaScripting plugin, String scriptName) {
+        if (!scriptName.endsWith(".lua")) {
+            scriptName += ".lua";
+        }
+
+        File scriptFile = new File(scriptsFolder, scriptName);
+        
+        if (!scriptFile.exists() || !scriptFile.isFile()) {
+            plugin.getLogger().warning("Script file not found: " + scriptName);
+            return false;
+        }
+
+        // Clean up all resources globally
+        cleanup(plugin);
+        
+        // Re-setup the API
+        if (!setup(plugin)) {
+            return false;
+        }
+
+        // Execute only the target script
+        try {
+            globals.loadfile(scriptFile.toPath().toString()).call();
+            plugin.getLogger().info("Successfully reloaded script: " + scriptName);
+            return true;
+        } catch (Exception e) {
+            plugin.getLogger().severe("Failed to reload Lua script '" + scriptName + "': " + e);
+            return false;
+        }
+    }
 }
