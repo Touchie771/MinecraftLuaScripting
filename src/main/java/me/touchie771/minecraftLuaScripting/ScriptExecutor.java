@@ -59,12 +59,6 @@ public class ScriptExecutor {
 
     public static void reloadAll(MinecraftLuaScripting plugin) {
         cleanup(plugin);
-        setup(plugin);
-        executeScripts();
-    }
-
-    public static void reloadAll(MinecraftLuaScripting plugin) {
-        cleanup(plugin);
         if (!setup(plugin)) {
             return;
         }
