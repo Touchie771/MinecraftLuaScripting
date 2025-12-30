@@ -9,6 +9,7 @@ import me.touchie771.minecraftLuaScripting.api.ServerApi;
 import me.touchie771.minecraftLuaScripting.api.WorldApi;
 import me.touchie771.minecraftLuaScripting.commandHandlers.CommandRegister;
 import me.touchie771.minecraftLuaScripting.eventHandlers.EventListener;
+import org.bukkit.Bukkit;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
@@ -19,9 +20,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class ScriptExecutor {
 
@@ -61,7 +63,16 @@ public class ScriptExecutor {
         executeScripts();
     }
 
-    public static void setup(MinecraftLuaScripting plugin) {
+    public static void reloadAll(MinecraftLuaScripting plugin) {
+        cleanup(plugin);
+        if (!setup(plugin)) {
+            return;
+        }
+        executeScripts(plugin);
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean setup(MinecraftLuaScripting plugin) {
         loadApi(plugin);
 
         if (!scriptsFolder.exists()) {
@@ -69,18 +80,35 @@ public class ScriptExecutor {
                 plugin.getLogger().info("Created scripts folder");
             }
             else {
-                plugin.getLogger().severe("Failed to create scripts folder");
-                plugin.onDisable();
+                plugin.getLogger().severe("Failed to create scripts folder: " + scriptsFolder.getAbsolutePath());
+                Bukkit.getPluginManager().disablePlugin(plugin);
+                return false;
             }
         }
 
         saveExampleScripts(plugin);
+        return true;
     }
 
-    public static void executeScripts() {
-        for (File script : Objects.requireNonNull(scriptsFolder.listFiles())) {
-            if (script.getName().endsWith(".lua")) {
+    public static void executeScripts(MinecraftLuaScripting plugin) {
+        if (!scriptsFolder.exists() || !scriptsFolder.isDirectory()) {
+            plugin.getLogger().warning("Scripts folder is missing or not a directory: " + scriptsFolder.getAbsolutePath());
+            return;
+        }
+
+        File[] scripts = scriptsFolder.listFiles((dir, name) -> name.endsWith(".lua"));
+        if (scripts == null) {
+            plugin.getLogger().warning("Failed to list scripts in folder: " + scriptsFolder.getAbsolutePath());
+            return;
+        }
+
+        Arrays.sort(scripts, Comparator.comparing(File::getName, String.CASE_INSENSITIVE_ORDER));
+
+        for (File script : scripts) {
+            try {
                 globals.loadfile(script.toPath().toString()).call();
+            } catch (Exception e) {
+                plugin.getLogger().severe("Failed to execute Lua script '" + script.getName() + "': " + e);
             }
         }
     }
