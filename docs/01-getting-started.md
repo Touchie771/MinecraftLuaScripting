@@ -11,7 +11,7 @@
 
 1. Create a new file in the `LuaScripts` folder with a `.lua` extension (e.g., `myscript.lua`)
 2. Add your Lua code to the file
-3. Use `/luascript reloadall` to reload all scripts or restart the server
+3. Use `/luascript reloadall` to reload all scripts, or `/luascript run <script>` to run a specific script, or restart the server
 
 ## Basic Script Structure
 

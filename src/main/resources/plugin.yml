@@ -7,7 +7,7 @@ description: A plugin that allows you to run Lua scripts in Minecraft.
 commands:
   luascript:
     description: Manage Lua scripts
-    usage: /luascript <reloadall|list>
+    usage: /luascript <reloadall|list|run|reload> [script]
     permission: luascript.admin
 permissions:
   luascript.admin:

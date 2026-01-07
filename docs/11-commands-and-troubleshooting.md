@@ -4,6 +4,45 @@
 
 The plugin provides built-in administrative commands for managing Lua scripts.
 
+### /luascript list
+
+Lists all `.lua` scripts found in the `LuaScripts` folder.
+
+**Permission:** `luascript.admin` (default: OP)
+
+**Usage:**
+```
+/luascript list
+```
+
+### /luascript run <script>
+
+Runs a single script from the `LuaScripts` folder.
+
+`<script>` can be provided with or without the `.lua` extension.
+
+**Permission:** `luascript.admin` (default: OP)
+
+**Usage:**
+```
+/luascript run <script>
+```
+
+### /luascript reload <script>
+
+Reloads a single script by clearing *all* script resources (events, commands, tasks) and then running only the target script.
+
+This means other scripts will need to be reloaded again (e.g. via `/luascript reloadall`) to restore their functionality.
+
+`<script>` can be provided with or without the `.lua` extension.
+
+**Permission:** `luascript.admin` (default: OP)
+
+**Usage:**
+```
+/luascript reload <script>
+```
+
 ### /luascript reloadall
 
 Reloads all Lua scripts from the `LuaScripts` folder.
